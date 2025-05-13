@@ -326,28 +326,44 @@ export default function FlightSearchForm() {
   // );
 
   return (
-    <div className="bg-black rounded-lg shadow-lg p-6 text-white">
+    <div className="bg-black text-white rounded-lg shadow-lg p-6 relative z-10">
+      {/* <div className="flex items-center space-x-4 mb-6">
+        <Button
+          type="button"
+          variant={isRoundTrip ? "outline" : "default"}
+          onClick={() => setIsRoundTrip(false)}
+          className={`flex-1 ${!isRoundTrip ? "bg-rose-600 text-white" : ""}`}
+        >
+          One Way
+        </Button>
+        <Button
+          type="button"
+          variant={isRoundTrip ? "default" : "outline"}
+          onClick={() => setIsRoundTrip(true)}
+          className={`flex-1 ${isRoundTrip ? "bg-rose-600 text-white" : ""}`}
+        >
+          Round Trip
+        </Button>
+      </div> */}
       <div className="flex items-center space-x-4 mb-6">
         <Button
           type="button"
-          variant="outline"
           onClick={() => setIsRoundTrip(false)}
-          className={`flex-1 border-2 ${
+          className={`flex-1 border border-gray-700 transition-colors ${
             !isRoundTrip
-              ? "bg-rose-600 text-white border-rose-600 hover:bg-rose-700"
-              : "bg-transparent text-gray-300 hover:bg-gray-800 border-gray-600"
+              ? "bg-rose-600 text-white"
+              : "bg-black text-white hover:bg-rose-600"
           }`}
         >
           One Way
         </Button>
         <Button
           type="button"
-          variant="outline"
           onClick={() => setIsRoundTrip(true)}
-          className={`flex-1 border-2 ${
+          className={`flex-1 border border-gray-700 transition-colors ${
             isRoundTrip
-              ? "bg-rose-600 text-white border-rose-600 hover:bg-rose-700"
-              : "bg-transparent text-gray-300 hover:bg-gray-800 border-gray-600"
+              ? "bg-rose-600 text-white"
+              : "bg-black text-white hover:bg-rose-600"
           }`}
         >
           Round Trip
@@ -355,9 +371,8 @@ export default function FlightSearchForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* From / To Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Origin */}
+          {/* Origin Field */}
           <div className="space-y-2">
             <Label htmlFor="origin">From</Label>
             <Popover open={originSearchOpen} onOpenChange={setOriginSearchOpen}>
@@ -366,18 +381,46 @@ export default function FlightSearchForm() {
                   variant="outline"
                   role="combobox"
                   aria-expanded={originSearchOpen}
-                  className="w-full bg-gray-900 text-white justify-between border-gray-600 hover:bg-gray-800"
+                  className="w-full justify-between bg-zinc-900 text-white border border-gray-700"
                 >
-                  {origin || "Search for airports..."}
+                  {origin ? origin : "Search for airports..."}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full p-0 bg-black border border-gray-700">
-                {/* ... origin command content */}
+              <PopoverContent className="w-full p-0 bg-black text-white border border-gray-700 z-50">
+                <Command>
+                  <CommandInput
+                    placeholder="Search airports..."
+                    value={originSearchValue}
+                    onValueChange={handleOriginSearch}
+                    className="text-white"
+                  />
+                  <CommandList>
+                    <CommandEmpty>No airports found.</CommandEmpty>
+                    <CommandGroup>
+                      {originAirports.map((airport) => (
+                        <CommandItem
+                          key={airport.iataCode}
+                          onSelect={() => {
+                            setOrigin(`${airport.name} (${airport.iataCode})`);
+                            setOriginCode(airport.iataCode);
+                            setOriginSearchOpen(false);
+                          }}
+                        >
+                          <Plane className="mr-2 h-4 w-4" />
+                          {airport.name} ({airport.iataCode})
+                          <span className="ml-2 text-sm text-muted-foreground">
+                            {airport.cityName}, {airport.countryName}
+                          </span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
               </PopoverContent>
             </Popover>
           </div>
 
-          {/* Destination */}
+          {/* Destination Field */}
           <div className="space-y-2">
             <Label htmlFor="destination">To</Label>
             <Popover
@@ -389,13 +432,43 @@ export default function FlightSearchForm() {
                   variant="outline"
                   role="combobox"
                   aria-expanded={destinationSearchOpen}
-                  className="w-full bg-gray-900 text-white justify-between border-gray-600 hover:bg-gray-800"
+                  className="w-full justify-between bg-zinc-900 text-white border border-gray-700"
                 >
-                  {destination || "Search for airports..."}
+                  {destination ? destination : "Search for airports..."}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full p-0 bg-black border border-gray-700">
-                {/* ... destination command content */}
+              <PopoverContent className="w-full p-0 bg-black text-white border border-gray-700 z-50">
+                <Command>
+                  <CommandInput
+                    placeholder="Search airports..."
+                    value={destinationSearchValue}
+                    onValueChange={handleDestinationSearch}
+                    className="text-white"
+                  />
+                  <CommandList>
+                    <CommandEmpty>No airports found.</CommandEmpty>
+                    <CommandGroup>
+                      {destinationAirports.map((airport) => (
+                        <CommandItem
+                          key={airport.iataCode}
+                          onSelect={() => {
+                            setDestination(
+                              `${airport.name} (${airport.iataCode})`
+                            );
+                            setDestinationCode(airport.iataCode);
+                            setDestinationSearchOpen(false);
+                          }}
+                        >
+                          <Plane className="mr-2 h-4 w-4" />
+                          {airport.name} ({airport.iataCode})
+                          <span className="ml-2 text-sm text-muted-foreground">
+                            {airport.cityName}, {airport.countryName}
+                          </span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
               </PopoverContent>
             </Popover>
           </div>
@@ -403,14 +476,14 @@ export default function FlightSearchForm() {
 
         {/* Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Departure */}
+          {/* Departure Date */}
           <div className="space-y-2">
             <Label htmlFor="departureDate">Departure Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full bg-gray-900 text-white justify-start text-left font-normal border-gray-600 hover:bg-gray-800"
+                  className="w-full justify-start text-left font-normal bg-zinc-900 text-white border border-gray-700"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {departureDate ? (
@@ -420,13 +493,19 @@ export default function FlightSearchForm() {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-black border border-gray-700">
-                {/* Calendar */}
+              <PopoverContent className="w-auto p-0 bg-black text-white border border-gray-700 z-50">
+                <Calendar
+                  mode="single"
+                  selected={departureDate}
+                  onSelect={setDepartureDate}
+                  initialFocus
+                  disabled={(date) => date < new Date()}
+                />
               </PopoverContent>
             </Popover>
           </div>
 
-          {/* Return (only if round trip) */}
+          {/* Return Date */}
           {isRoundTrip && (
             <div className="space-y-2">
               <Label htmlFor="returnDate">Return Date</Label>
@@ -434,7 +513,7 @@ export default function FlightSearchForm() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full bg-gray-900 text-white justify-start text-left font-normal border-gray-600 hover:bg-gray-800"
+                    className="w-full justify-start text-left font-normal bg-zinc-900 text-white border border-gray-700"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {returnDate ? (
@@ -444,27 +523,32 @@ export default function FlightSearchForm() {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-black border border-gray-700">
-                  {/* Calendar */}
+                <PopoverContent className="w-auto p-0 bg-black text-white border border-gray-700 z-50">
+                  <Calendar
+                    mode="single"
+                    selected={returnDate}
+                    onSelect={setReturnDate}
+                    initialFocus
+                    disabled={(date) => date < (departureDate || new Date())}
+                  />
                 </PopoverContent>
               </Popover>
             </div>
           )}
         </div>
 
-        {/* Passengers and Cabin Class */}
+        {/* Passengers & Cabin Class */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Passengers */}
           <div className="space-y-2">
             <Label htmlFor="passengers">Passengers</Label>
             <Select value={passengers} onValueChange={setPassengers}>
               <SelectTrigger
                 id="passengers"
-                className="bg-gray-900 text-white border-gray-600 hover:bg-gray-800"
+                className="bg-zinc-900 text-white border border-gray-700"
               >
                 <SelectValue placeholder="Select passengers" />
               </SelectTrigger>
-              <SelectContent className="bg-black text-white border border-gray-700">
+              <SelectContent className="bg-black text-white border border-gray-700 z-50">
                 <SelectItem value="1">1 Passenger</SelectItem>
                 <SelectItem value="2">2 Passengers</SelectItem>
                 <SelectItem value="3">3 Passengers</SelectItem>
@@ -474,17 +558,16 @@ export default function FlightSearchForm() {
             </Select>
           </div>
 
-          {/* Cabin Class */}
           <div className="space-y-2">
             <Label htmlFor="cabinClass">Cabin Class</Label>
             <Select value={cabinClass} onValueChange={setCabinClass}>
               <SelectTrigger
                 id="cabinClass"
-                className="bg-gray-900 text-white border-gray-600 hover:bg-gray-800"
+                className="bg-zinc-900 text-white border border-gray-700"
               >
                 <SelectValue placeholder="Select cabin class" />
               </SelectTrigger>
-              <SelectContent className="bg-black text-white border border-gray-700">
+              <SelectContent className="bg-black text-white border border-gray-700 z-50">
                 <SelectItem value="ECONOMY">Economy</SelectItem>
                 <SelectItem value="PREMIUM_ECONOMY">Premium Economy</SelectItem>
                 <SelectItem value="BUSINESS">Business</SelectItem>
@@ -494,7 +577,6 @@ export default function FlightSearchForm() {
           </div>
         </div>
 
-        {/* Submit */}
         <Button
           type="submit"
           className="w-full bg-rose-600 hover:bg-rose-700 text-white"
