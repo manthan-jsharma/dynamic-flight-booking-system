@@ -327,24 +327,6 @@ export default function FlightSearchForm() {
 
   return (
     <div className="bg-black text-white rounded-lg shadow-lg p-6 relative z-10">
-      {/* <div className="flex items-center space-x-4 mb-6">
-        <Button
-          type="button"
-          variant={isRoundTrip ? "outline" : "default"}
-          onClick={() => setIsRoundTrip(false)}
-          className={`flex-1 ${!isRoundTrip ? "bg-rose-600 text-white" : ""}`}
-        >
-          One Way
-        </Button>
-        <Button
-          type="button"
-          variant={isRoundTrip ? "default" : "outline"}
-          onClick={() => setIsRoundTrip(true)}
-          className={`flex-1 ${isRoundTrip ? "bg-rose-600 text-white" : ""}`}
-        >
-          Round Trip
-        </Button>
-      </div> */}
       <div className="flex items-center space-x-4 mb-6">
         <Button
           type="button"
@@ -392,7 +374,7 @@ export default function FlightSearchForm() {
                     placeholder="Search airports..."
                     value={originSearchValue}
                     onValueChange={handleOriginSearch}
-                    className="text-white"
+                    className="text-black bg-white placeholder-gray-400"
                   />
                   <CommandList>
                     <CommandEmpty>No airports found.</CommandEmpty>
@@ -437,13 +419,13 @@ export default function FlightSearchForm() {
                   {destination ? destination : "Search for airports..."}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full p-0 bg-black text-white border border-gray-700 z-50">
+              <PopoverContent className="w-full p-0 bg-black border-gray-700 z-50">
                 <Command>
                   <CommandInput
                     placeholder="Search airports..."
                     value={destinationSearchValue}
                     onValueChange={handleDestinationSearch}
-                    className="text-white"
+                    className="text-black bg-white placeholder-gray-400"
                   />
                   <CommandList>
                     <CommandEmpty>No airports found.</CommandEmpty>
